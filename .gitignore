@@ -1,0 +1,42 @@
+# Environment
+.env
+.env.*
+!.env.example
+
+# Composer & Node
+vendor/
+node_modules/
+dist/
+build/
+.pnpm-store/
+
+# Cache & Logs
+*.log
+var/cache/
+var/log/
+var/temp/
+var/uploads/
+var/sessions/
+temp/
+log/
+.cache/
+
+# Testing & Coverage
+.phpunit.result.cache
+.pest/
+coverage/
+.infection/
+infection.log
+
+# IDE & OS
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+.DS_Store
+Thumbs.db
+
+# Databases
+*.sqlite
+*.sqlite3
+*.db

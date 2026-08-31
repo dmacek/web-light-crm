@@ -1,0 +1,47 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+require __DIR__ . '/../vendor/autoload.php';
+
+use Doctrine\DBAL\DriverManager;
+use Doctrine\Migrations\Configuration\Connection\ExistingConnection;
+use Doctrine\Migrations\Configuration\Migration\PhpFile;
+use Doctrine\Migrations\DependencyFactory;
+use Doctrine\Migrations\Tools\Console\Command as MigrationCommands;
+use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+
+$cli = new Application('Web-Light-CRM Backend Console', '1.0.0');
+
+// Database connection for Doctrine Migrations
+$dbUrl = getenv('DATABASE_URL') ?: 'postgres://user:password@localhost:5432/app_db?sslmode=disable';
+$connectionParams = ['url' => $dbUrl];
+
+try {
+    $connection = DriverManager::getConnection($connectionParams);
+    $config = new PhpFile(__DIR__ . '/../config/migrations.php');
+    $dependencyFactory = DependencyFactory::fromConnection($config, new ExistingConnection($connection));
+
+    $cli->addCommands([
+        new MigrationCommands\DumpSchemaCommand($dependencyFactory),
+        new MigrationCommands\ExecuteCommand($dependencyFactory),
+        new MigrationCommands\GenerateCommand($dependencyFactory),
+        new MigrationCommands\LatestCommand($dependencyFactory),
+        new MigrationCommands\ListCommand($dependencyFactory),
+        new MigrationCommands\MigrateCommand($dependencyFactory),
+        new MigrationCommands\RollupCommand($dependencyFactory),
+        new MigrationCommands\StatusCommand($dependencyFactory),
+        new MigrationCommands\SyncMetadataCommand($dependencyFactory),
+        new MigrationCommands\VersionCommand($dependencyFactory),
+        new MigrationCommands\DiffCommand($dependencyFactory),
+    ]);
+} catch (\Throwable $e) {
+    // Migrations commands won't be available if DB connection fails immediately
+}
+
+// Custom cron / CLI commands can be added here
+$cli->run();

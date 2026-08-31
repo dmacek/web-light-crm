@@ -1,0 +1,53 @@
+parameters:
+    database:
+        url: %env.DATABASE_URL%
+    redis:
+        url: %env.REDIS_URL%
+    jwt:
+        secret: %env.JWT_SECRET%
+    app:
+        env: %env.APP_ENV%
+
+services:
+    # Redis Client
+    redis.client:
+        factory: Predis\Client(%parameters.redis.url%)
+
+    # Security & Tokens
+    - App\Security\JwtService(%parameters.jwt.secret%)
+    - App\Security\RefreshTokenService(@redis.client)
+    - App\Security\SessionStore(@redis.client)
+
+    # Integrations
+    - App\Module\Integrations\Ares\AresClient(@redis.client)
+    - App\Module\Integrations\Wedos\WedosClient()
+
+    # Repositories
+    - App\Module\Domain\BusinessRepository()
+    - App\Module\Auth\AuthProviderRepository()
+    - App\Module\Onboarding\OnboardingDraftRepository(@redis.client)
+    - App\Module\Crm\LeadRepository()
+    - App\Module\Website\WebContentRepository(@redis.client)
+
+    # Facades
+    - App\Module\Auth\AuthFacade()
+    - App\Module\Onboarding\OnboardingFacade()
+    - App\Module\Crm\LeadFacade()
+    - App\Module\Website\WebsiteFacade()
+    - App\Module\Public\LeadIntakeService()
+    - App\Module\Billing\SubscriptionService()
+
+    # Controllers
+    - App\Module\Auth\Controller\AuthController()
+    - App\Module\Onboarding\Controller\OnboardingController()
+    - App\Module\Integrations\Ares\Controller\AresController()
+    - App\Module\Integrations\Domain\Controller\DomainCheckController()
+    - App\Module\Crm\Controller\LeadController()
+    - App\Module\Website\Controller\WebsiteController()
+    - App\Module\Public\Controller\PublicLeadController()
+    - App\Module\Billing\Controller\SubscriptionController()
+
+    # HTTP & Routing
+    - App\Http\Router()
+    - App\Http\ErrorHandler()
+    - App\Http\CorsMiddleware()

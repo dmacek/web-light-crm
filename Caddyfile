@@ -1,0 +1,41 @@
+{
+    on_demand_tls {
+        ask http://backend-api:8000/api/v1/domains/check
+    }
+}
+
+# Mobilní Správcovská Aplikace (Admin SPA/PWA)
+app.tvojeaplikace.cz {
+    reverse_proxy admin-app:80
+}
+
+# REST API pro mobilní aplikaci
+api.tvojeaplikace.cz {
+    reverse_proxy backend-api:8000
+}
+
+# Veřejné weby živnostníků (Vlastní .cz domény + Subdomény)
+:443 {
+    tls {
+        on_demand
+    }
+    reverse_proxy public-renderer:3000
+}
+
+# HTTP Fallback pro lokální vývoj / testy bez SSL
+:80 {
+    @admin host app.tvojeaplikace.cz admin.localhost localhost:8080
+    handle @admin {
+        reverse_proxy admin-app:80
+    }
+
+    @api host api.tvojeaplikace.cz api.localhost localhost:8000
+    handle @api {
+        reverse_proxy backend-api:8000
+    }
+
+    # Default fallback pro veřejné weby
+    handle {
+        reverse_proxy public-renderer:3000
+    }
+}

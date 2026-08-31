@@ -1,0 +1,18 @@
+{
+    "name": "web-light-crm/public-renderer",
+    "description": "SSR public website engine for Web-Light-CRM",
+    "type": "project",
+    "license": "proprietary",
+    "require": {
+        "php": ">=8.3",
+        "latte/latte": "^3.0",
+        "nette/http": "^3.3",
+        "nette/utils": "^4.0",
+        "predis/predis": "^2.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Renderer\\": "app/"
+        }
+    }
+}
