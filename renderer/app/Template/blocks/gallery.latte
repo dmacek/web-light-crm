@@ -1,0 +1,39 @@
+{var $galleryVariant = $design['block_variants']['gallery'] ?? 'GRID_2X2'}
+
+{if !empty($content['gallery'])}
+<section class="section" id="galerie">
+    <div class="container">
+        <h2 class="section-title">Ukázky našich prací</h2>
+        <p class="section-subtitle">Reálné fotografie z našich posledních zakázek</p>
+
+        {if $galleryVariant === 'CAROUSEL_SLIDER'}
+        <div style="display: flex; gap: 1rem; overflow-x: auto; padding-bottom: 1rem; scroll-snap-type: x mandatory;">
+            {foreach $content['gallery'] as $img}
+            <div style="flex: 0 0 280px; scroll-snap-align: start; border-radius: var(--radius); overflow: hidden; aspect-ratio: 4/3; border: 1px solid var(--border);">
+                <img src="{$img['image_url']}" alt="{$img['caption'] ?? 'Ukázka práce'}" style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+            {/foreach}
+        </div>
+
+        {elseif $galleryVariant === 'FEATURED_HERO'}
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem;">
+            {foreach $content['gallery'] as $index => $img}
+            <div style="border-radius: var(--radius); overflow: hidden; aspect-ratio: 16/9; border: 1px solid var(--border); {if $index === 0}grid-column: 1 / -1; aspect-ratio: 21/9;{/if}">
+                <img src="{$img['image_url']}" alt="{$img['caption'] ?? 'Ukázka práce'}" style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+            {/foreach}
+        </div>
+
+        {else}
+        <!-- GRID_2X2 (Default) -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem;">
+            {foreach $content['gallery'] as $img}
+            <div style="border-radius: var(--radius); overflow: hidden; aspect-ratio: 1/1; border: 1px solid var(--border);">
+                <img src="{$img['image_url']}" alt="{$img['caption'] ?? 'Ukázka práce'}" style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+            {/foreach}
+        </div>
+        {/if}
+    </div>
+</section>
+{/if}

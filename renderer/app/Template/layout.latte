@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{$business['company_name']} — {$business['main_trade_name']}</title>
+    <meta name="description" content="{$business['company_name']} - profesionální {$business['main_trade_name']}. Tel: {$business['phone']}, {$business['city']}.">
+    
+    <!-- OpenGraph -->
+    <meta property="og:title" content="{$business['company_name']}">
+    <meta property="og:description" content="{$business['main_trade_name']} • Tel: {$business['phone']}">
+    <meta property="og:type" content="website">
+
+    <!-- CSS Reset & Dynamic Theme Tokens -->
+    <style>
+        :root {
+            --primary: {$tokens['primary']};
+            --secondary: {$tokens['secondary']};
+            --bg: {$tokens['background']};
+            --text: {$tokens['textColor']};
+            --card-bg: {$tokens['cardBg']};
+            --border: {$tokens['borderColor']};
+            --font-main: {$tokens['fontFamily']};
+            --font-heading: {$tokens['headingFont']};
+            --radius: {$tokens['radius']};
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: var(--font-heading);
+            line-height: 1.25;
+            font-weight: 700;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 960px;
+            margin-left: auto;
+            margin-right: auto;
+            padding-left: 1.25rem;
+            padding-right: 1.25rem;
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            background-color: var(--primary);
+            color: #ffffff;
+            font-weight: 600;
+            padding: 0.875rem 1.75rem;
+            border-radius: var(--radius);
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: opacity 0.2s ease;
+        }
+        .btn-primary:hover {
+            opacity: 0.9;
+        }
+
+        .btn-phone {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            background-color: #16a34a;
+            color: #ffffff;
+            font-weight: 700;
+            padding: 0.875rem 1.75rem;
+            border-radius: var(--radius);
+            text-decoration: none;
+            font-size: 1.125rem;
+            box-shadow: 0 4px 14px rgba(22, 163, 74, 0.35);
+        }
+
+        .section {
+            padding-top: 3.5rem;
+            padding-bottom: 3.5rem;
+        }
+
+        .section-title {
+            font-size: 1.875rem;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            opacity: 0.75;
+            margin-bottom: 2.5rem;
+            font-size: 1rem;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+        }
+
+        /* Floating quick call bar on mobile */
+        .mobile-quick-call {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(8px);
+            border-top: 1px solid var(--border);
+            padding: 0.75rem 1rem;
+            z-index: 50;
+            box-shadow: 0 -4px 16px rgba(0,0,0,0.08);
+        }
+
+        @media (max-width: 768px) {
+            .mobile-quick-call {
+                display: flex;
+                gap: 0.75rem;
+            }
+            body {
+                padding-bottom: 4.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    {include 'blocks/vacationBanner.latte'}
+
+    <header>
+        {include 'blocks/hero.latte'}
+    </header>
+
+    <main>
+        {include 'blocks/services.latte'}
+        {include 'blocks/pricing.latte'}
+        {include 'blocks/gallery.latte'}
+        {include 'blocks/contact.latte'}
+    </main>
+
+    <footer style="background-color: var(--card-bg); border-top: 1px solid var(--border); padding: 2.5rem 0; text-align: center; font-size: 0.875rem; opacity: 0.8;">
+        <div class="container">
+            <p><strong>{$business['company_name']}</strong> • IČO: {$business['ico']}</p>
+            <p>{$business['street']}, {$business['zip']} {$business['city']}</p>
+            <p style="margin-top: 1rem; font-size: 0.75rem; opacity: 0.6;">
+                Vytvořeno pomocí Web-Light-CRM
+            </p>
+        </div>
+    </footer>
+
+    <!-- Fixed Mobile Contact Bar -->
+    <div class="mobile-quick-call">
+        <a href="tel:{$business['phone']}" class="btn-phone" style="flex: 1; padding: 0.75rem; font-size: 1rem;">
+            📞 Zavolat
+        </a>
+        <a href="#poptavka" class="btn-primary" style="flex: 1; padding: 0.75rem; font-size: 1rem;">
+            ✉️ Poptat
+        </a>
+    </div>
+</body>
+</html>

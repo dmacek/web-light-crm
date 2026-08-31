@@ -1,0 +1,98 @@
+<section class="section" id="poptavka">
+    <div class="container">
+        <h2 class="section-title">Nezávazná poptávka</h2>
+        <p class="section-subtitle">Napište nám, co potřebujete, nebo nám rovnou zavolejte</p>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+            <!-- Contact Details Card -->
+            <div class="card" style="display: flex; flex-direction: column; justify-content: space-between; gap: 1.5rem;">
+                <div>
+                    <h3 style="font-size: 1.35rem; margin-bottom: 1rem; color: var(--primary);">
+                        {$business['company_name']}
+                    </h3>
+                    <div style="display: flex; flex-direction: column; gap: 0.875rem; font-size: 1rem;">
+                        <p><strong>📞 Telefon:</strong> <a href="tel:{$business['phone']}" style="color: var(--primary); font-weight: 700; text-decoration: none;">{$business['phone']}</a></p>
+                        {if !empty($business['email'])}
+                        <p><strong>✉️ E-mail:</strong> <a href="mailto:{$business['email']}" style="color: var(--primary); text-decoration: none;">{$business['email']}</a></p>
+                        {/if}
+                        <p><strong>📍 Provozovna / Sídlo:</strong><br>{$business['street']}, {$business['zip']} {$business['city']}</p>
+                        <p><strong>🕒 Otevírací doba:</strong><br>{$content['opening_hours'] ?: 'Dle předchozí telefonické domluvy'}</p>
+                    </div>
+                </div>
+
+                <div>
+                    <a href="tel:{$business['phone']}" class="btn-phone" style="width: 100%;">
+                        📞 Rychlé volání ({$business['phone']})
+                    </a>
+                </div>
+            </div>
+
+            <!-- Interactive Public Lead Form -->
+            <div class="card">
+                <form id="leadForm" style="display: flex; flex-direction: column; gap: 1rem;">
+                    <div>
+                        <label style="display: block; font-size: 0.875rem; font-weight: 600; margin-bottom: 0.25rem;">Vaše jméno a příjmení *</label>
+                        <input type="text" name="sender_name" required placeholder="např. Jan Novák" style="width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--border); border-radius: var(--radius); font-size: 1rem; background: var(--bg); color: var(--text);">
+                    </div>
+
+                    <div>
+                        <label style="display: block; font-size: 0.875rem; font-weight: 600; margin-bottom: 0.25rem;">Telefonní číslo *</label>
+                        <input type="tel" name="sender_phone" required placeholder="+420 777 123 456" style="width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--border); border-radius: var(--radius); font-size: 1rem; background: var(--bg); color: var(--text);">
+                    </div>
+
+                    <div>
+                        <label style="display: block; font-size: 0.875rem; font-weight: 600; margin-bottom: 0.25rem;">Váš e-mail (nepovinné)</label>
+                        <input type="email" name="sender_email" placeholder="jan.novak@email.cz" style="width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--border); border-radius: var(--radius); font-size: 1rem; background: var(--bg); color: var(--text);">
+                    </div>
+
+                    <div>
+                        <label style="display: block; font-size: 0.875rem; font-weight: 600; margin-bottom: 0.25rem;">Popis poptávky / Co potřebujete vyřešit? *</label>
+                        <textarea name="message" required rows="3" placeholder="Popište stručně požadovanou službu, termín nebo adresu..." style="width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--border); border-radius: var(--radius); font-size: 1rem; background: var(--bg); color: var(--text);"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn-primary" style="width: 100%; font-size: 1.05rem;">
+                        ✉️ Odeslat nezávaznou poptávku
+                    </button>
+                    <p id="leadStatus" style="font-size: 0.875rem; text-align: center; margin-top: 0.5rem;"></p>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+document.getElementById('leadForm')?.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const statusEl = document.getElementById('leadStatus');
+    const btn = this.querySelector('button[type="submit"]');
+    btn.disabled = true;
+    statusEl.textContent = 'Odesílám poptávku...';
+    statusEl.style.color = 'var(--text)';
+
+    const formData = new FormData(this);
+    const payload = Object.fromEntries(formData.entries());
+
+    try {
+        const host = window.location.hostname;
+        const res = await fetch('/api/v1/public/site/' + host + '/lead', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (res.ok) {
+            statusEl.textContent = '✓ ' + (data.message || 'Poptávka byla úspěšně odeslána!');
+            statusEl.style.color = '#16a34a';
+            this.reset();
+        } else {
+            statusEl.textContent = '✕ ' + (data.error?.message || 'Chyba při odesílání.');
+            statusEl.style.color = '#dc2626';
+            btn.disabled = false;
+        }
+    } catch (err) {
+        statusEl.textContent = '✕ Nepodařilo se odeslat poptávku.';
+        statusEl.style.color = '#dc2626';
+        btn.disabled = false;
+    }
+});
+</script>

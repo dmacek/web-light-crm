@@ -1,0 +1,77 @@
+{var $heroVariant = $design['block_variants']['hero'] ?? 'FULL_IMAGE_OVERLAY'}
+
+{if $heroVariant === 'SPLIT_TEXT_IMAGE'}
+<div class="section" style="background: linear-gradient(180deg, var(--card-bg) 0%, var(--bg) 100%);">
+    <div class="container" style="display: flex; flex-wrap: wrap; align-items: center; gap: 2rem;">
+        <div style="flex: 1; min-width: 280px;">
+            <span style="display: inline-block; background-color: var(--primary); color: #fff; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; margin-bottom: 1rem;">
+                {$business['main_trade_name']}
+            </span>
+            <h1 style="font-size: 2.5rem; margin-bottom: 1rem; color: var(--text);">
+                {$business['company_name']}
+            </h1>
+            <p style="font-size: 1.125rem; opacity: 0.85; margin-bottom: 1.5rem;">
+                Profesionální služby v lokalitě {$business['city']} a okolí. Rychlé jednání a spolehlivost.
+            </p>
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                <a href="tel:{$business['phone']}" class="btn-phone">📞 {$business['phone']}</a>
+                <a href="#poptavka" class="btn-primary">Poptat služby</a>
+            </div>
+        </div>
+        <div style="flex: 1; min-width: 280px; text-align: center;">
+            <div style="aspect-ratio: 4/3; background-color: var(--border); border-radius: var(--radius); overflow: hidden; display: flex; align-items: center; justify-content: center; font-size: 3rem;">
+                {if !empty($content['gallery'][0]['image_url'])}
+                    <img src="{$content['gallery'][0]['image_url']}" style="width: 100%; height: 100%; object-fit: cover;" alt="{$business['company_name']}">
+                {else}
+                    🛠️
+                {/if}
+            </div>
+        </div>
+    </div>
+</div>
+
+{elseif $heroVariant === 'COMPACT_CARD'}
+<div class="section" style="padding-top: 2rem; padding-bottom: 2rem;">
+    <div class="container">
+        <div class="card" style="text-align: center; padding: 3rem 1.5rem; border-top: 6px solid var(--primary);">
+            <span style="font-size: 0.875rem; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: 1px;">
+                {$business['main_trade_name']}
+            </span>
+            <h1 style="font-size: 2.25rem; margin: 0.75rem 0 1rem;">
+                {$business['company_name']}
+            </h1>
+            <p style="max-width: 600px; margin: 0 auto 1.75rem; opacity: 0.85;">
+                📍 {$business['street']}, {$business['city']}
+            </p>
+            <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+                <a href="tel:{$business['phone']}" class="btn-phone">📞 Zavolat {$business['phone']}</a>
+                <a href="#poptavka" class="btn-primary">Nezávazná poptávka</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{else}
+<!-- FULL_IMAGE_OVERLAY (Default) -->
+<div style="background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); color: #ffffff; padding: 5rem 0; text-align: center;">
+    <div class="container">
+        <span style="display: inline-block; background-color: rgba(255, 255, 255, 0.2); padding: 0.35rem 1rem; border-radius: 9999px; font-size: 0.8125rem; font-weight: 600; text-transform: uppercase; margin-bottom: 1.25rem;">
+            {$business['main_trade_name']}
+        </span>
+        <h1 style="font-size: 2.75rem; margin-bottom: 1rem; max-width: 750px; margin-left: auto; margin-right: auto; line-height: 1.2;">
+            {$business['company_name']}
+        </h1>
+        <p style="font-size: 1.25rem; opacity: 0.9; margin-bottom: 2rem; max-width: 600px; margin-left: auto; margin-right: auto;">
+            📍 {$business['street']}, {$business['city']}
+        </p>
+        <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+            <a href="tel:{$business['phone']}" class="btn-phone">
+                📞 {$business['phone']}
+            </a>
+            <a href="#poptavka" class="btn-primary" style="background-color: #ffffff; color: var(--primary);">
+                ✉️ Odeslat poptávku
+            </a>
+        </div>
+    </div>
+</div>
+{/if}

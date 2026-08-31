@@ -1,0 +1,31 @@
+{if !empty($content['services'])}
+<section class="section" id="sluzby">
+    <div class="container">
+        <h2 class="section-title">Naše služby</h2>
+        <p class="section-subtitle">Co pro vás můžeme udělat a v jakém rozsahu</p>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
+            {foreach $content['services'] as $service}
+            <div class="card" style="display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h3 style="font-size: 1.25rem; margin-bottom: 0.75rem; color: var(--primary);">
+                        {$service['title']}
+                    </h3>
+                    <p style="opacity: 0.85; font-size: 0.9375rem; margin-bottom: 1.25rem;">
+                        {$service['description']}
+                    </p>
+                </div>
+                <div style="border-top: 1px solid var(--border); padding-top: 0.75rem; display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-weight: 700; font-size: 1.125rem; color: var(--text);">
+                        {$service['price_text']}
+                    </span>
+                    <a href="#poptavka" style="font-size: 0.875rem; font-weight: 600; color: var(--primary); text-decoration: none;">
+                        Objednat →
+                    </a>
+                </div>
+            </div>
+            {/foreach}
+        </div>
+    </div>
+</section>
+{/if}
