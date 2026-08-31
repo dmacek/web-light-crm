@@ -1,0 +1,35 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+@plugin "@tailwindcss/forms";
+
+@theme {
+  --color-primary: #2563eb;
+  --color-primary-hover: #1d4ed8;
+  --color-surface: #ffffff;
+  --radius-card: 1rem;
+
+  --color-bg: #f8fafc;
+  --color-text: #0f172a;
+  --color-border: #e2e8f0;
+}
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Mobile app shell container */
+@utility mobile-container {
+  margin-inline: auto;
+  width: 100%;
+  max-width: 440px;
+  min-height: 100dvh;
+  background-color: var(--color-surface);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+}
+
+@utility app-card {
+  border-radius: var(--radius-card);
+  border: 1px solid var(--color-border);
+  background-color: var(--color-surface);
+  padding: 1rem;
+}
