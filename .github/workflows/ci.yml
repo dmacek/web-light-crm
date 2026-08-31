@@ -1,0 +1,102 @@
+name: CI
+
+on:
+  push:
+    branches: [dev, main]
+  pull_request:
+    branches: [dev, main]
+
+jobs:
+  php-qa:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./backend
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: pdo, pdo_pgsql, pgsql, zip, bcmath
+          tools: composer:v2
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: backend/vendor
+          key: ${{ runner.os }}-composer-${{ hashFiles('backend/composer.json') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress
+
+      - name: Check code style
+        run: composer cs:check
+
+      - name: Static Analysis (PHPStan level 9)
+        run: composer phpstan
+
+      - name: Rector Check
+        run: composer rector:check
+
+      - name: Run Pest Tests
+        run: composer test
+
+  frontend-qa:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./admin
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: admin/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Vitest Tests
+        run: npm run test
+
+      - name: Build Vite PWA
+        run: npm run build
+
+  docker-build:
+    needs: [php-qa, frontend-qa]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Admin Image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./admin
+          push: false
+          tags: web-light-crm-admin:test
+
+      - name: Build Backend Image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend
+          push: false
+          tags: web-light-crm-backend:test
+
+      - name: Build Renderer Image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./renderer
+          push: false
+          tags: web-light-crm-renderer:test
